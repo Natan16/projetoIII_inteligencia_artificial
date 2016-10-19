@@ -1,11 +1,10 @@
 package tabelas;
 
-import java.util.List;
 
 public class Movie {
 	private int movieID = 0;
 	private String title = null;
-	private List<String> genres = null;
+	private String[] genres = null;
 	
 	public int getMovieID() {
 		return movieID;
@@ -19,10 +18,10 @@ public class Movie {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public List<String> getGenres() {
+	public String[] getGenres() {
 		return genres;
 	}
-	public void setGenres(List<String> genres) {
+	public void setGenres(String[] genres) {
 		this.genres = genres;
 	}
 	

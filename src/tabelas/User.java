@@ -1,7 +1,14 @@
 package tabelas;
 
 public class User {
- 	private char gender ;
+ 	private int userID;
+	public int getUserID() {
+		return userID;
+	}
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+	private char gender ;
 	private int age;
 	private int occupation;
 	private int zipcode ;
