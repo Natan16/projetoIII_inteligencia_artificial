@@ -11,7 +11,7 @@ public class User {
 	private char gender ;
 	private int age;
 	private int occupation;
-	private int zipcode ;
+	private String zipcode ;
 	
 	public char getGender() {
 		return gender;
@@ -31,10 +31,10 @@ public class User {
 	public void setOccupation(int occupation) {
 		this.occupation = occupation;
 	}
-	public int getZipcode() {
+	public String getZipcode() {
 		return zipcode;
 	}
-	public void setZipcode(int zipcode) {
+	public void setZipcode(String zipcode) {
 		this.zipcode = zipcode;
 	}
 }

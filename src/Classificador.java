@@ -2,6 +2,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import tabelas.*;
@@ -18,11 +19,15 @@ public class Classificador {
 	 * @throws IOException
 	 */
 	public static void main(String[] args)  throws IOException {
+		movies = new ArrayList<Movie>();
+		ratings = new ArrayList<Rating>();
+		users = new ArrayList<User>();
 		
 	    DataInputStream inputMovies , inputRatings , inputUsers;
 		//leitura e armazenamento de movies.dat
-	    inputMovies = new DataInputStream(new FileInputStream("movies.dat"));
+	    inputMovies = new DataInputStream(new FileInputStream("src/movies.dat"));
 		while (inputMovies.available() > 0) {
+			@SuppressWarnings("deprecation")
 			String inputMoviesLine = inputMovies.readLine();
 			String[] movieArguments = inputMoviesLine.split("::");
 			Movie mMovie = new Movie();
@@ -33,8 +38,9 @@ public class Classificador {
 		}            
         inputMovies.close();
         //leitura e armazenamento de ratings.dat
-        inputRatings = new DataInputStream(new FileInputStream("ratings.dat"));
-		while (inputMovies.available() > 0) {
+        inputRatings = new DataInputStream(new FileInputStream("src/ratings.dat"));
+		while (inputRatings.available() > 0) {
+			@SuppressWarnings("deprecation")
 			String inputRatingsLine = inputRatings.readLine();
 			String[] ratingArguments = inputRatingsLine.split("::");
 			Rating mRating = new Rating();
@@ -46,8 +52,9 @@ public class Classificador {
 		}            
         inputRatings.close();
         //leitura e armazenamento de users.dat
-        inputUsers = new DataInputStream(new FileInputStream("users.dat"));
-		while (inputMovies.available() > 0) {
+        inputUsers = new DataInputStream(new FileInputStream("src/users.dat"));
+		while (inputUsers.available() > 0) {
+			@SuppressWarnings("deprecation")
 			String inputUsersLine = inputUsers.readLine();
 			String[] userArguments = inputUsersLine.split("::");
 			User mUser = new User();
@@ -55,12 +62,12 @@ public class Classificador {
 			mUser.setGender(userArguments[1].charAt(0));
 			mUser.setAge(Integer.parseInt(userArguments[2]));
 			mUser.setOccupation(Integer.parseInt(userArguments[3]));
-			mUser.setZipcode(Integer.parseInt(userArguments[4]));
+			mUser.setZipcode(userArguments[4]);
 		    users.add(mUser);
+		    System.out.println(inputUsersLine);
 		}            
-        inputMovies.close();
-        
-
+        inputUsers.close();
+       
 	}
 
 	public static Movie getMovieById(int movieID){
