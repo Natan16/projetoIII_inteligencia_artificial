@@ -1,9 +1,10 @@
 import java.io.DataInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import tabelas.*;
 
@@ -13,7 +14,8 @@ public class Classificador {
 	public static List<Movie> movies;
 	public static List<Rating> ratings;
 	public static List<User> users;
-	
+	//minhas avaliações. A chave é a id do filme e o valor a o rating
+	public static Map<Integer , Integer> myRatings = new HashMap<Integer , Integer>();
 	/**
 	 * @param args
 	 * @throws IOException
@@ -64,10 +66,25 @@ public class Classificador {
 			mUser.setOccupation(Integer.parseInt(userArguments[3]));
 			mUser.setZipcode(userArguments[4]);
 		    users.add(mUser);
-		    System.out.println(inputUsersLine);
+		    //System.out.println(inputUsersLine);
 		}            
         inputUsers.close();
-       
+        
+         
+        
+	}
+	
+	public static int aPriori(int movieID){
+		int soma = 0;
+		int quantidade = 0;
+		for(Rating rating : ratings ){
+			if( rating.getMovieID() == movieID){
+				soma += rating.getRating();
+				quantidade++;
+			}
+		}
+		if ( quantidade != 0) return soma/quantidade + (2*soma/quantidade)%2;
+		return 0;
 	}
 
 	public static Movie getMovieById(int movieID){
