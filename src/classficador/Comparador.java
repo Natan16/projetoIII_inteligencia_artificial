@@ -17,9 +17,15 @@ public class Comparador {
 	public int[][] matrizDeConfusao(){
 		return new int[5][5];
 	}
-	
-	public float erroQuadraticoMedio(){
-		return 0;
+	//supondo que o estimador não tem viés
+	public float erroQuadraticoMedio(int[][] matrizDeConfusao){
+		float EQM = 0;
+		for ( int actual = 0 ; actual < 4 ; actual++){
+			for ( int predicted = 0 ; predicted < 4 ; predicted++){
+			   EQM += ((float) matrizDeConfusao[actual][predicted])*Math.pow(actual - predicted , 2);
+			}
+		}
+		return EQM;
 	}
 	
 	public float estatisticaKappa(int[][] matrizDeConfusao){
@@ -27,4 +33,5 @@ public class Comparador {
 		float po = taxaDeAcerto(matrizDeConfusao); 
 		return (po - pe)/(1-pe);
 	}
+	
 }
