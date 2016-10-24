@@ -3,7 +3,7 @@ package classficador;
 import java.util.Map;
 
 public class Comparador {
-	public float taxaDeAcerto(int[][] matrizDeConfusao){
+	public static float taxaDeAcerto(int[][] matrizDeConfusao){
 		int elemDiagonalPrincipal = 0;
 		int elemMatrizConfusao = 0;
 		for ( int actual = 0 ; actual < 4 ; actual++){
@@ -16,7 +16,7 @@ public class Comparador {
 		if ( elemMatrizConfusao != 0) return elemDiagonalPrincipal;
 		return 0;
 	}
-	public int[][] matrizDeConfusao(Map<Integer , Integer> predicted ,Map<Integer , Integer> actual){
+	public static int[][] matrizDeConfusao(Map<Integer , Integer> predicted ,Map<Integer , Integer> actual){
 		int[][] matrizConfusao = new int[5][5];
 		for ( int i = 0 ; i < 5 ; i++){
 			for ( int j = 0 ; j < 5 ; j++){
@@ -32,17 +32,20 @@ public class Comparador {
 		return matrizConfusao;
 	}
 	//supondo que o estimador não tem viés
-	public float erroQuadraticoMedio(int[][] matrizDeConfusao){
+	public static float erroQuadraticoMedio(int[][] matrizDeConfusao){
 		float EQM = 0;
+		float totalEval = 0;
 		for ( int actual = 0 ; actual < 4 ; actual++){
 			for ( int predicted = 0 ; predicted < 4 ; predicted++){
 			   EQM += ((float) matrizDeConfusao[actual][predicted])*Math.pow(actual - predicted , 2);
+			   totalEval += (float) matrizDeConfusao[actual][predicted];
 			}
-		}
+		} 
+		EQM = EQM/totalEval;
 		return EQM;
 	}
 	
-	public float estatisticaKappa(int[][] matrizDeConfusao){
+	public static float estatisticaKappa(int[][] matrizDeConfusao){
 		float pe = 1/5;
 		float po = taxaDeAcerto(matrizDeConfusao); 
 		return (po - pe)/(1-pe);

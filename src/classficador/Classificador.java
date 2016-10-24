@@ -27,6 +27,9 @@ public class Classificador {
 		ratings = new ArrayList<Rating>();
 		users = new ArrayList<User>();
 		User me = new User();
+		Map<Integer , Integer> aPrioriRatings = new HashMap<Integer , Integer>();
+		
+		
 		//preenchendo as informações sobre mim
 		me.setAge(23);
 		me.setGender('M');
@@ -45,21 +48,57 @@ public class Classificador {
 		myRatings.put(2700,4);
 		myRatings.put(3409,1);
 		
-		Map<Integer , Integer> aPrioriRattings = new HashMap<Integer , Integer>();
-		int[][] matrizConfusaoAPriori = new int[5][5];
-		for ( int i = 0 ; i < 5 ; i++){
-			for ( int j = 0 ; j < 5 ; j++){
-				matrizConfusaoAPriori[i][j] = 0;
-			}
-		}
-		for (int movieID : ids){
+		leituraArmazenamento();
+	           
+        for (int movieID : ids){
 			int classAPriori = aPriori(movieID);
 			if ( classAPriori != 0){
-				matrizConfusaoAPriori[myRatings.get(movieID) - 1][classAPriori - 1]++;
+				aPrioriRatings.put(movieID, classAPriori);
 			}
 		}
 		
-	    DataInputStream inputMovies , inputRatings , inputUsers;
+		int[][] matrizConfusaoAPriori = Comparador.matrizDeConfusao(aPrioriRatings , myRatings);
+		Formatador.formatar(matrizConfusaoAPriori , "a priori");
+		Formatador.formatar(matrizConfusaoAPriori, "arvore de decisão");
+	 
+        
+	}
+	//no nosso caso, padrão = 3 ( pode ser melhorado tomando como base as avalizações do usuário )
+	//código postal pode ser considerado irrelevante pra evitar overfitting 
+	public static int arvoreDecisao(List<Rating> exemplos , /*generos possíveis , ids possíveis (será ?) , 
+	faixa etária , ocupação, código postal*/   int padrao ){
+		
+		
+		return 0;
+	}
+	
+	public static int aPriori(int movieID){
+		int soma = 0;
+		int quantidade = 0;
+		for(Rating rating : ratings ){
+			if( rating.getMovieID() == movieID){
+				soma += rating.getRating();
+				quantidade++;
+			}
+		}
+		if ( quantidade != 0) return soma/quantidade + (2*soma/quantidade)%2;
+		return 0;
+	}
+
+	public static Movie getMovieById(int movieID){
+		for (Movie movie : movies)
+			if ( movie.getMovieID() == movieID) return movie;
+		return null;
+	}
+	
+	public static User getUserById(int userID){
+		for (User user : users)
+			if ( user.getUserID() == userID) return user;
+		return null;
+	}
+	
+	public static void leituraArmazenamento() throws NumberFormatException, IOException{
+		DataInputStream inputMovies , inputRatings , inputUsers;
 		//leitura e armazenamento de movies.dat
 	    inputMovies = new DataInputStream(new FileInputStream("src/movies.dat"));
 		while (inputMovies.available() > 0) {
@@ -103,41 +142,5 @@ public class Classificador {
 		    //System.out.println(inputUsersLine);
 		}            
         inputUsers.close();
-        
-         
-        
-	}
-	//no nosso caso, padrão = 3 ( pode ser melhorado tomando como base as avalizações do usuário )
-	//código postal pode ser considerado irrelevante pra evitar overfitting 
-	public static int arvoreDecisao(List<Rating> exemplos , /*generos possíveis , ids possíveis (será ?) , 
-	faixa etária , ocupação, código postal*/   int padrao ){
-		
-		
-		return 0;
-	}
-	
-	public static int aPriori(int movieID){
-		int soma = 0;
-		int quantidade = 0;
-		for(Rating rating : ratings ){
-			if( rating.getMovieID() == movieID){
-				soma += rating.getRating();
-				quantidade++;
-			}
-		}
-		if ( quantidade != 0) return soma/quantidade + (2*soma/quantidade)%2;
-		return 0;
-	}
-
-	public static Movie getMovieById(int movieID){
-		for (Movie movie : movies)
-			if ( movie.getMovieID() == movieID) return movie;
-		return null;
-	}
-	
-	public static User getUserById(int userID){
-		for (User user : users)
-			if ( user.getUserID() == userID) return user;
-		return null;
 	}
 }
