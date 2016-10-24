@@ -1,5 +1,7 @@
 package classficador;
 
+import java.util.Map;
+
 public class Comparador {
 	public float taxaDeAcerto(int[][] matrizDeConfusao){
 		int elemDiagonalPrincipal = 0;
@@ -14,8 +16,20 @@ public class Comparador {
 		if ( elemMatrizConfusao != 0) return elemDiagonalPrincipal;
 		return 0;
 	}
-	public int[][] matrizDeConfusao(){
-		return new int[5][5];
+	public int[][] matrizDeConfusao(Map<Integer , Integer> predicted ,Map<Integer , Integer> actual){
+		int[][] matrizConfusao = new int[5][5];
+		for ( int i = 0 ; i < 5 ; i++){
+			for ( int j = 0 ; j < 5 ; j++){
+				matrizConfusao[i][j] = 0;
+			}
+		}
+		for (int movieID : actual.keySet()){
+			int classAPriori = predicted.get(movieID);
+			if ( classAPriori != 0){
+				matrizConfusao[actual.get(movieID) - 1][classAPriori - 1]++;
+			}
+		}
+		return matrizConfusao;
 	}
 	//supondo que o estimador não tem viés
 	public float erroQuadraticoMedio(int[][] matrizDeConfusao){

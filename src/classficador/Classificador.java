@@ -33,6 +33,7 @@ public class Classificador {
 		me.setOccupation(4);
 		me.setZipcode("12228-461");
 		//preenchendo as avaliações dos 10 filmes que eu já assiti
+		int[] ids = {19,32,47,153,648,2571,2594,2628,2700,3409};
 		myRatings.put(19, 4);
 		myRatings.put(32, 2);
 		myRatings.put(47, 5);
@@ -44,6 +45,19 @@ public class Classificador {
 		myRatings.put(2700,4);
 		myRatings.put(3409,1);
 		
+		Map<Integer , Integer> aPrioriRattings = new HashMap<Integer , Integer>();
+		int[][] matrizConfusaoAPriori = new int[5][5];
+		for ( int i = 0 ; i < 5 ; i++){
+			for ( int j = 0 ; j < 5 ; j++){
+				matrizConfusaoAPriori[i][j] = 0;
+			}
+		}
+		for (int movieID : ids){
+			int classAPriori = aPriori(movieID);
+			if ( classAPriori != 0){
+				matrizConfusaoAPriori[myRatings.get(movieID) - 1][classAPriori - 1]++;
+			}
+		}
 		
 	    DataInputStream inputMovies , inputRatings , inputUsers;
 		//leitura e armazenamento de movies.dat
@@ -94,7 +108,8 @@ public class Classificador {
         
 	}
 	//no nosso caso, padrão = 3 ( pode ser melhorado tomando como base as avalizações do usuário )
-	public static int arvoreDecisao(List<Rating> exemplos , /*generos possíveis , ids possíveis (será ) , 
+	//código postal pode ser considerado irrelevante pra evitar overfitting 
+	public static int arvoreDecisao(List<Rating> exemplos , /*generos possíveis , ids possíveis (será ?) , 
 	faixa etária , ocupação, código postal*/   int padrao ){
 		
 		
