@@ -25,5 +25,4 @@ public class Movie {
 		this.genres = genres;
 	}
 	
-	
 }
