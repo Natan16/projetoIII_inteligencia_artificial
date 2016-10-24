@@ -72,6 +72,24 @@ public class Classificador {
 		return 0;
 	}
 	
+	public static float entropia(List<Rating> exemplos){
+		float[] p = {0,0,0,0,0};
+		float sum_p = exemplos.size();
+		float entropia = 0;
+		for ( Rating rating : exemplos){
+			p[rating.getRating() - 1] += 1;
+		}
+		for ( int i = 0 ; i < 5 ; i++){
+			entropia += -(p[i]/sum_p)*Math.log10(p[i]/sum_p);
+		}
+		
+		return entropia;
+	}
+	
+	public static int ganho(){
+		return 0;
+	}
+	
 	public static int aPriori(int movieID){
 		int soma = 0;
 		int quantidade = 0;
