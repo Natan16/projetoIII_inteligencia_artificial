@@ -1,3 +1,4 @@
+package classficador;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,6 +15,7 @@ public class Classificador {
 	public static List<Movie> movies;
 	public static List<Rating> ratings;
 	public static List<User> users;
+	public static User me; //o usuário correspondente a mim 
 	//minhas avaliações. A chave é a id do filme e o valor a o rating
 	public static Map<Integer , Integer> myRatings = new HashMap<Integer , Integer>();
 	/**
@@ -24,6 +26,24 @@ public class Classificador {
 		movies = new ArrayList<Movie>();
 		ratings = new ArrayList<Rating>();
 		users = new ArrayList<User>();
+		User me = new User();
+		//preenchendo as informações sobre mim
+		me.setAge(23);
+		me.setGender('M');
+		me.setOccupation(4);
+		me.setZipcode("12228-461");
+		//preenchendo as avaliações dos 10 filmes que eu já assiti
+		myRatings.put(19, 4);
+		myRatings.put(32, 2);
+		myRatings.put(47, 5);
+		myRatings.put(153,3);
+		myRatings.put(648,3);
+		myRatings.put(2571,5);
+		myRatings.put(2594,5);
+		myRatings.put(2628,2);
+		myRatings.put(2700,4);
+		myRatings.put(3409,1);
+		
 		
 	    DataInputStream inputMovies , inputRatings , inputUsers;
 		//leitura e armazenamento de movies.dat
