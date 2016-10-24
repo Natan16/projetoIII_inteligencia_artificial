@@ -95,7 +95,7 @@ public class Classificador {
 	}
 	//no nosso caso, padrão = 3 ( pode ser melhorado tomando como base as avalizações do usuário )
 	public static int arvoreDecisao(List<Rating> exemplos , /*generos possíveis , ids possíveis (será ) , 
-	faixa etária , ocupação, código postal, id do filme*/   int padrao ){
+	faixa etária , ocupação, código postal*/   int padrao ){
 		
 		
 		return 0;

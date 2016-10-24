@@ -11,18 +11,20 @@ public class Comparador {
 				elemMatrizConfusao += matrizDeConfusao[actual][predicted];
 			}
 		}
-		if ( elemMatrizConfusao != 0) return elemDiagonalPrincipal/elemMatrizConfusao;
+		if ( elemMatrizConfusao != 0) return elemDiagonalPrincipal;
 		return 0;
 	}
-	public float matrizDeConfusao(){
-		return 0;
+	public int[][] matrizDeConfusao(){
+		return new int[5][5];
 	}
 	
 	public float erroQuadraticoMedio(){
 		return 0;
 	}
 	
-	public float estatisticaKappa(){
-		return 0;
+	public float estatisticaKappa(int[][] matrizDeConfusao){
+		float pe = 1/5;
+		float po = taxaDeAcerto(matrizDeConfusao); 
+		return (po - pe)/(1-pe);
 	}
 }
