@@ -63,6 +63,15 @@ public class Classificador {
 	 
         
 	}
+	
+/*	public enum Animal {
+		   GENEROS(0) , RAPOSA(1) , CARAMUJO(2) , CAVALO(3) , ZEBRA(4);
+			public int value;
+
+		    Animal(int valueArg){ 
+		        value = valueArg; 
+		    }
+	}*/
 	//no nosso caso, padrão = 3 ( pode ser melhorado tomando como base as avalizações do usuário )
 	//código postal pode ser considerado irrelevante pra evitar overfitting 
 	public static int arvoreDecisao(List<Rating> exemplos , /*generos possíveis , ids possíveis (será ?) , 
@@ -72,21 +81,22 @@ public class Classificador {
 		return 0;
 	}
 	
-	public static float entropia(List<Rating> exemplos){
+	public static float entropia(List<Rating> s){
 		float[] p = {0,0,0,0,0};
-		float sum_p = exemplos.size();
+		float sum_p = s.size();
 		float entropia = 0;
-		for ( Rating rating : exemplos){
+		for ( Rating rating : s){
 			p[rating.getRating() - 1] += 1;
 		}
 		for ( int i = 0 ; i < 5 ; i++){
 			entropia += -(p[i]/sum_p)*Math.log10(p[i]/sum_p);
 		}
-		
 		return entropia;
 	}
-	
-	public static int ganho(){
+	//TODO : precisa definir o que vai poder ser um atributo e quais os possíveis valores 
+	//que ele pode assumir
+	public static int ganho(List<Rating> s , Atributo a){
+		
 		return 0;
 	}
 	
