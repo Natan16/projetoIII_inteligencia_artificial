@@ -3,26 +3,39 @@ package classficador;
 import java.util.List;
 
 public class Atributos {
-	private List<String> genres = null;
-	private int ocupation = 0 ;
+
+	/*int[] ages = {1, 18 , 25, 35, 45, 50 , 56};
+	char[]  genders = {'M','F'};
+	int[] occupations = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+		*/
+	private List<String> atributos;
+	
+/*	private int ocupation = 0 ;
 	private int age = 0;
 	private char gender = ' ';
-	private int movieID = 0;
-	public Atributos(List<String> genres , int ocupation , int age, char gender  ,int movieID ){
-		this.genres = genres;
+	private int movieID = 0;*/
+	public Atributos(List<String> atributos ){
+		this.atributos = atributos;
+		/*this.genres = genres;
 		this.ocupation = ocupation;
 		this.age = age;
 		this.gender = gender;
-		this.movieID = movieID;
+		this.movieID = movieID;*/
 	}
 	public boolean ehVazio(){
-		if( genres == null && ocupation == 0 && age == 0 && gender == ' ' && movieID == 0){
+		if(this.atributos.size() == 0)	
 			return true;
-		}
+		
 		return false;
 	}
+	public List<String> getAtributos() {
+		return atributos;
+	}
+	public void setAtributos(List<String> atributos) {
+		this.atributos = atributos;
+	}
 	
-	public List<String> getGenres() {
+	/*public List<String> getGenres() {
 		return genres;
 	}
 	public void setGenres(List<String> genres) {
@@ -51,5 +64,5 @@ public class Atributos {
 	}
 	public void setMovieID(int movieID) {
 		this.movieID = movieID;
-	}
+	}*/
 }

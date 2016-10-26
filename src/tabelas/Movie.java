@@ -24,5 +24,4 @@ public class Movie {
 	public void setGenres(String[] genres) {
 		this.genres = genres;
 	}
-	
 }

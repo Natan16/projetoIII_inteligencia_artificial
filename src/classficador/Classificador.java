@@ -28,7 +28,7 @@ public class Classificador {
 		users = new ArrayList<User>();
 		User me = new User();
 		Map<Integer , Integer> aPrioriRatings = new HashMap<Integer , Integer>();
-		
+		Map<Integer , Integer> decisionTreeRatings = new HashMap<Integer , Integer>();
 		
 		//preenchendo as informações sobre mim
 		me.setAge(23);
@@ -49,28 +49,47 @@ public class Classificador {
 		myRatings.put(3409,1);
 		
 		leituraArmazenamento();
-	           
+		
+	    List<String> atributos = new ArrayList<String>();
+	    atributos.add("Action");
+	    atributos.add("Adventure");
+	    atributos.add("Animation");
+	    atributos.add("Children's");
+	    atributos.add("Comedy");
+	    atributos.add("Crime");
+	    atributos.add("Documentary");
+	    atributos.add("Drama");
+	    atributos.add("Fantasy");
+	    atributos.add("Film-Noir");
+	    atributos.add("Horror");
+	    atributos.add("Musical");
+	    atributos.add("Mystery");
+	    atributos.add("Romance");
+	    atributos.add("Sci-Fi");
+	    atributos.add("Thriller");
+	    atributos.add("War");
+	    atributos.add("Western");
+	    atributos.add("gender");
+	    atributos.add("occupation");
+	    atributos.add("age");
+	    
         for (int movieID : ids){
 			int classAPriori = aPriori(movieID);
-			if ( classAPriori != 0){
+			int classArvoreDecisao = arvoreDecisao( ratings , new Atributos(atributos) , 
+					    3 , me ,  getMovieById(movieID));
+			if( classAPriori != 0){
 				aPrioriRatings.put(movieID, classAPriori);
 			}
+			decisionTreeRatings.put(movieID, classArvoreDecisao);
 		}
 		
 		int[][] matrizConfusaoAPriori = Comparador.matrizDeConfusao(aPrioriRatings , myRatings);
+		int[][] matrizConfusaoDecisionTree = Comparador.matrizDeConfusao(decisionTreeRatings , myRatings);
 		Formatador.formatar(matrizConfusaoAPriori , "a priori ");
-		Formatador.formatar(matrizConfusaoAPriori, "arvore de decisão ");
-	 
+		Formatador.formatar( matrizConfusaoDecisionTree, "arvore de decisão ");
+		
 	}
 	
-/*	public enum Animal {
-		   GENEROS(0) , RAPOSA(1) , CARAMUJO(2) , CAVALO(3) , ZEBRA(4);
-			public int value;
-
-		    Animal(int valueArg){ 
-		        value = valueArg; 
-		    }
-	}*/
 	public static boolean mesmaClassificacao(List<Rating> exemplos){
 		int rating = exemplos.get(0).getRating();
 		for(Rating exemplo : exemplos){
@@ -101,31 +120,122 @@ public class Classificador {
 		if (mesmaClassificacao(exemplos)) return exemplos.get(0).getRating();
 		if ( atributos.ehVazio()) return valorDaMaioria(exemplos);
 		
-		List<Rating> exemplosi = exemplos; //na verdade vai ser so subconjunto de exemplos 
+		List<Rating> exemplosi = new ArrayList<Rating>(); //na verdade vai ser so subconjunto de exemplos 
 		//que tenha como valor do atributo que mais aumenta o ganho o valor da combinação
 		//usuário-filme passado
-		//ganho(exemplos , "genre");
 		Atributos atributosi = atributos;
+		System.out.println(atributos.getAtributos().size());
+		String melhor = maiorGanho( exemplos , atributos );
+		atributosi.getAtributos().remove(melhor);// atributosi = atributos - melhor
+		//atualizar exemplosi tirando o melhor
+		System.out.println(melhor);
+		if(melhor.equals("gender")){
+			for (Rating exemplo : exemplos){
+				if(getUserById(exemplo.getUserID()).getGender() == user.getGender()){
+					exemplosi.add(exemplo);
+				}
+			}
+		}
+		else if ( melhor.equals("occupation")){
+			for (Rating exemplo : exemplos){
+				if(getUserById(exemplo.getUserID()).getOccupation() == user.getOccupation()){
+					exemplosi.add(exemplo);
+				}
+			}
+		}
+		else if(melhor.equals("age")){
+			for (Rating exemplo : exemplos){
+				if(getUserById(exemplo.getUserID()).getAge() == user.getAge()){
+					exemplosi.add(exemplo);
+				}
+			}
+		}
+		else {
+			List<String> genres = new ArrayList<String>();
+		    genres.add("Action");
+		    genres.add("Adventure");
+		    genres.add("Animation");
+		    genres.add("Children's");
+		    genres.add("Comedy");
+		    genres.add("Crime");
+		    genres.add("Documentary");
+		    genres.add("Drama");
+		    genres.add("Fantasy");
+		    genres.add("Film-Noir");
+		    genres.add("Horror");
+		    genres.add("Musical");
+		    genres.add("Mystery");
+		    genres.add("Romance");
+		    genres.add("Sci-Fi");
+		    genres.add("Thriller");
+		    genres.add("War");
+		    genres.add("Western");
+			for(String genre : genres){
+				if(melhor.equals(genre)){
+					for (Rating exemplo : exemplos){
+						
+						if(containsGenre(melhor , movie.getGenres()) && 
+								containsGenre(melhor , getMovieById(exemplo.getMovieID()).getGenres())){
+							exemplosi.add(exemplo);
+						}
+						else if(!containsGenre(melhor , movie.getGenres()) &&
+								!containsGenre(melhor , getMovieById(exemplo.getMovieID()).getGenres())){
+							exemplosi.add(exemplo);
+						}
+					}
+				}
+			}
+		}
 		int m = valorDaMaioria(exemplosi);
-		
+		//não existe necessidade de construir a árvore toda, apenas a subárvore relevante
+		//ao par usuário-filme sendo avaliadoo
 		return arvoreDecisao( exemplosi ,atributosi , m , user , movie);
+	}
+	
+	public static boolean containsGenre(String genre , String[] genres){
+		for( String mGenre : genres){
+			if( mGenre.equals(genre) ) return true;
+		}
+		return false;
+	}
+	
+	public static boolean hasGenre(String genre ,  String[] genres){
+		for ( int i  = 0 ; i < genres.length ; i ++ ){
+			if ( genres[i].equals(genre)) return true;
+		}
+		return false;
+	}
+	
+	public static String maiorGanho( List<Rating> s , Atributos atributos){
+	 	float maiorGanho = Integer.MIN_VALUE;
+	 	String maiorGanhoAtr = null;
+	 	for( String a : atributos.getAtributos() ){
+	 	 	System.out.println(atributos.getAtributos().size());
+	 		if( ganho(s ,  a) > maiorGanho ){
+	 	 		maiorGanho = ganho(s, a);
+	 	 		maiorGanhoAtr = a;
+	 	 	}
+	 	}
+		return maiorGanhoAtr;
 	}
 	
 	public static float entropia(List<Rating> s){
 		float[] p = {0,0,0,0,0};
 		float sum_p = s.size();
+		if(sum_p == 0) return 0;
 		float entropia = 0;
 		for ( Rating rating : s){
 			p[rating.getRating() - 1] += 1;
 		}
 		for ( int i = 0 ; i < 5 ; i++){
-			entropia += -(p[i]/sum_p)*Math.log10(p[i]/sum_p);
+			if ( p[i] != 0  ) 
+				entropia += -(p[i]/sum_p)*Math.log10(p[i]/sum_p);
 		}
 		return entropia;
 	}
 	//TODO : precisa definir o que vai poder ser um atributo e quais os possíveis valores 
 	//que ele pode assumir
-	public static float ganho(List<Rating> s , String a , String tipo){
+	public static float ganho(List<Rating> s , String a){
 		String[] genres = {"Action",
 							"Adventure",
 							"Animation",
@@ -150,25 +260,36 @@ public class Classificador {
 		
 		float sum = 0;
 		float modS = s.size();
-		if ( tipo.equals("genre")){
-			for ( int i = 0 ; i < genres.length ; i++){
-				if(genres[i].equals(a)){
-					List<Rating> sv = new ArrayList<Rating>();
-					List<Rating> sv2 = new ArrayList<Rating>();
-					for (Rating rating : s){ 
-						if(hasGenre(a, getMovieById(rating.getMovieID()).getGenres())){
-							sv.add(rating);
-						}
-						else sv2.add(rating);
+		//System.out.println(modS);
+		
+		for ( int i = 0 ; i < genres.length ; i++){
+			if(genres[i].equals(a)){
+				List<Rating> sv = new ArrayList<Rating>();
+				List<Rating> sv2 = new ArrayList<Rating>();
+				for (Rating rating : s){ 
+					//System.out.println(a);
+					//System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+					//for (int j = 0 ; j < getMovieById(rating.getMovieID()).getGenres().length ; j++)
+					//	System.out.println(getMovieById(rating.getMovieID()).getGenres()[j]);
+					//System.out.println("-------------------------------------------");
+					if(hasGenre(a, getMovieById(rating.getMovieID()).getGenres())){
+						sv.add(rating);
 					}
-					float modSv = sv.size() ;
-					float modSv2 = sv2.size() ;
-					sum += ((modSv/modS)*entropia(sv) + (modSv2/modS)*entropia(sv2));
+					else sv2.add(rating);
 				}
+				float modSv = sv.size() ;
+				float modSv2 = sv2.size() ;
+				//System.out.println(modSv);
+				//System.out.println(modSv2);
+				if(modSv != 0)
+					sum += (modSv/modS)*entropia(sv);
+				if(modSv2 != 0)
+					sum +=  (modSv2/modS)*entropia(sv2);
 			}
 		}
 		
-		else if (tipo.equals("age")){
+		
+		if (a.equals("age")){
 			List<Rating> sv = new ArrayList<Rating>();
 			for (int age : ages ){
 				for (Rating rating : s){ 
@@ -177,11 +298,12 @@ public class Classificador {
 					}
 				}
 				float modSv = sv.size() ;
-				sum += (modSv/modS)*entropia(sv);
+				if(modSv != 0)
+					sum += (modSv/modS)*entropia(sv);
 			}
 					
 		}
-		else if(tipo.equals("gender")){
+		else if(a.equals("gender")){
 			List<Rating> sv = new ArrayList<Rating>();
 			for (char gender : genders ){
 				for (Rating rating : s){ 
@@ -190,10 +312,11 @@ public class Classificador {
 					}
 				}
 				float modSv = sv.size() ;
-				sum += (modSv/modS)*entropia(sv);
+				if(modSv != 0)
+					sum += (modSv/modS)*entropia(sv);
 			}
 		}
-		else if(tipo.equals("occupation")){
+		else if(a.equals("occupation")){
 			List<Rating> sv = new ArrayList<Rating>();
 			for (int occupation : occupations ){
 				for (Rating rating : s){ 
@@ -202,23 +325,20 @@ public class Classificador {
 					}
 				}
 				float modSv = sv.size() ;
-				sum += (modSv/modS)*entropia(sv);
+				if(modSv != 0)	
+					sum += (modSv/modS)*entropia(sv);
 			}
 		}
 		/*else if(tipo.equals("movieID")){
 			
 		}*/
-		
+		//System.out.println(entropia(s));
+		//System.out.println(sum);
 		float ganho = entropia(s) - sum;
 		return ganho;
 	}
 	
-	public static boolean hasGenre(String genre ,  String[] genres){
-		for ( int i  = 0 ; i < genres.length ; i ++ ){
-			if ( genres[i].equals(genre)) return true;
-		}
-		return false;
-	}
+	
 	
 	public static int aPriori(int movieID){
 		int soma = 0;
@@ -256,7 +376,9 @@ public class Classificador {
 			Movie mMovie = new Movie();
 			mMovie.setMovieID(Integer.parseInt(movieArguments[0]));
 		    mMovie.setTitle(movieArguments[1]);
-		    mMovie.setGenres(movieArguments[2].split("|"));
+		    //System.out.println(movieArguments[2].split("\\|")[0]);
+		    mMovie.setGenres(movieArguments[2].split("\\|"));
+		    //System.out.println(mMovie.getGenres()[0]);
 		    movies.add(mMovie);
 		}            
         inputMovies.close();

@@ -8,12 +8,13 @@ public class Comparador {
 		int elemMatrizConfusao = 0;
 		for ( int actual = 0 ; actual < 4 ; actual++){
 			for ( int predicted = 0 ; predicted < 4 ; predicted++){
-				if ( actual == predicted) elemDiagonalPrincipal += 
-						matrizDeConfusao[actual][predicted];
+				if ( actual == predicted) {
+					elemDiagonalPrincipal += matrizDeConfusao[actual][predicted];
+				}
 				elemMatrizConfusao += matrizDeConfusao[actual][predicted];
 			}
 		}
-		if ( elemMatrizConfusao != 0) return elemDiagonalPrincipal;
+		if ( elemMatrizConfusao != 0) return elemDiagonalPrincipal/elemMatrizConfusao;
 		return 0;
 	}
 	public static int[][] matrizDeConfusao(Map<Integer , Integer> predicted ,Map<Integer , Integer> actual){
