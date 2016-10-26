@@ -15,6 +15,13 @@ public class Atributos {
 		this.gender = gender;
 		this.movieID = movieID;
 	}
+	public boolean ehVazio(){
+		if( genres == null && ocupation == 0 && age == 0 && gender == ' ' && movieID == 0){
+			return true;
+		}
+		return false;
+	}
+	
 	public List<String> getGenres() {
 		return genres;
 	}
