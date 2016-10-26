@@ -72,6 +72,7 @@ public class Classificador {
 	    atributos.add("gender");
 	    atributos.add("occupation");
 	    atributos.add("age");
+	    atributos.add("movieID");
 	    
         for (int movieID : ids){
 			int classAPriori = aPriori(movieID);
@@ -124,7 +125,7 @@ public class Classificador {
 		//que tenha como valor do atributo que mais aumenta o ganho o valor da combinação
 		//usuário-filme passado
 		Atributos atributosi = atributos;
-		System.out.println(atributos.getAtributos().size());
+		//System.out.println(atributos.getAtributos().size());
 		String melhor = maiorGanho( exemplos , atributos );
 		atributosi.getAtributos().remove(melhor);// atributosi = atributos - melhor
 		//atualizar exemplosi tirando o melhor
@@ -146,6 +147,13 @@ public class Classificador {
 		else if(melhor.equals("age")){
 			for (Rating exemplo : exemplos){
 				if(getUserById(exemplo.getUserID()).getAge() == user.getAge()){
+					exemplosi.add(exemplo);
+				}
+			}
+		}
+		else if( melhor.equals("movieID")){
+			for (Rating exemplo : exemplos){
+				if( exemplo.getMovieID() == movie.getMovieID()){
 					exemplosi.add(exemplo);
 				}
 			}
@@ -199,18 +207,18 @@ public class Classificador {
 		return false;
 	}
 	
-	public static boolean hasGenre(String genre ,  String[] genres){
+	/*public static boolean hasGenre(String genre ,  String[] genres){
 		for ( int i  = 0 ; i < genres.length ; i ++ ){
 			if ( genres[i].equals(genre)) return true;
 		}
 		return false;
-	}
+	}*/
 	
 	public static String maiorGanho( List<Rating> s , Atributos atributos){
 	 	float maiorGanho = Integer.MIN_VALUE;
 	 	String maiorGanhoAtr = null;
 	 	for( String a : atributos.getAtributos() ){
-	 	 	System.out.println(atributos.getAtributos().size());
+	 	 	//System.out.println(atributos.getAtributos().size());
 	 		if( ganho(s ,  a) > maiorGanho ){
 	 	 		maiorGanho = ganho(s, a);
 	 	 		maiorGanhoAtr = a;
@@ -272,7 +280,7 @@ public class Classificador {
 					//for (int j = 0 ; j < getMovieById(rating.getMovieID()).getGenres().length ; j++)
 					//	System.out.println(getMovieById(rating.getMovieID()).getGenres()[j]);
 					//System.out.println("-------------------------------------------");
-					if(hasGenre(a, getMovieById(rating.getMovieID()).getGenres())){
+					if(containsGenre(a, getMovieById(rating.getMovieID()).getGenres())){
 						sv.add(rating);
 					}
 					else sv2.add(rating);
@@ -329,9 +337,26 @@ public class Classificador {
 					sum += (modSv/modS)*entropia(sv);
 			}
 		}
-		/*else if(tipo.equals("movieID")){
-			
-		}*/
+		else if(a.equals("movieID")){
+			List<Integer> movieIDs = new ArrayList<Integer>();
+			for(Rating rating : s){
+				int movieID = rating.getMovieID();
+				if(!movieIDs.contains(movieID)){
+					movieIDs.add(movieID);
+				} 
+			}
+			List<Rating> sv = new ArrayList<Rating>();
+			for (int movieID :  movieIDs){
+				for (Rating rating : s){ 
+					if(rating.getMovieID() == movieID){
+						sv.add(rating);
+					}
+				}
+				float modSv = sv.size() ;
+				if(modSv != 0)	
+					sum += (modSv/modS)*entropia(sv);
+			}
+		}
 		//System.out.println(entropia(s));
 		//System.out.println(sum);
 		float ganho = entropia(s) - sum;

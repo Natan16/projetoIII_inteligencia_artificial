@@ -6,9 +6,9 @@ public class Formatador {
 				+ "seguintes resultados");
 		System.out.println("Matriz de confusão");
 		imprimirMatriz(matrizDeConfusao);
-		System.out.println("Taxa de acerto : " + Comparador.taxaDeAcerto(matrizDeConfusao));
-		System.out.println("Estatística Kappa : " + Comparador.estatisticaKappa(matrizDeConfusao));	
-		System.out.println("Erro Quadrático Médio  : " + Comparador.erroQuadraticoMedio(matrizDeConfusao));
+		//System.out.println("Taxa de acerto : " + Comparador.taxaDeAcerto(matrizDeConfusao));
+		//System.out.println("Estatística Kappa : " + Comparador.estatisticaKappa(matrizDeConfusao));	
+		//System.out.println("Erro Quadrático Médio  : " + Comparador.erroQuadraticoMedio(matrizDeConfusao));
 		System.out.println("-----------------------------------------------------");
 	
 	}
